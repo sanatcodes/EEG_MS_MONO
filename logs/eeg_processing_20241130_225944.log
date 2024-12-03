@@ -1,0 +1,6 @@
+2024-11-30 22:59:44,092 - INFO - Processing /Users/sthukral/Documents/GitHub/EEG_MS_MONO/data/1.0.0/Subject00_1.edf
+2024-11-30 22:59:44,191 - INFO - Data shape: (19, 91000), Duration: 182.00s
+2024-11-30 22:59:44,195 - INFO - GFP stats - Mean: 0.00, STD: 0.00, Min: 0.00, Max: 0.00
+2024-11-30 22:59:44,197 - INFO - Found 1329 GFP peaks (min distance: 60ms)
+2024-11-30 22:59:44,197 - INFO - GFP threshold: 0.000 (mean + 0.5*std)
+2024-11-30 22:59:44,199 - INFO - Processing 1329 GFP windows

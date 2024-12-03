@@ -1,0 +1,34 @@
+2024-11-30 22:53:23,321 - INFO - Processing /Users/sthukral/Documents/GitHub/EEG_MS_MONO/data/1.0.0/Subject00_1.edf
+2024-11-30 22:53:24,647 - INFO - Data shape: (19, 91000), Duration: 182.00s
+2024-11-30 22:53:24,650 - INFO - GFP stats - Mean: 0.00, STD: 0.00, Min: 0.00, Max: 0.00
+2024-11-30 22:53:24,653 - INFO - Found 1329 GFP peaks (min distance: 60ms)
+2024-11-30 22:53:24,653 - INFO - GFP threshold: 0.000 (mean + 0.5*std)
+2024-11-30 22:53:24,654 - INFO - Processing 1329 GFP windows
+2024-11-30 22:53:25,759 - ERROR - Error processing /Users/sthukral/Documents/GitHub/EEG_MS_MONO/data/1.0.0/Subject00_1.edf: Invalid image dimensions: (98, 92, 4), expected (128, 128, 3)
+Traceback (most recent call last):
+  File "/Users/sthukral/Documents/GitHub/EEG_MS_MONO/utils/create_topomaps.py", line 251, in process_eeg
+    self.process_gfp_windows(data, eeg_data.info, peak_windows, output_dir)
+  File "/Users/sthukral/Documents/GitHub/EEG_MS_MONO/utils/create_topomaps.py", line 206, in process_gfp_windows
+    self.create_topomap(snapshot, eeg_info, output_path)
+  File "/Users/sthukral/Documents/GitHub/EEG_MS_MONO/utils/create_topomaps.py", line 124, in create_topomap
+    self._verify_image(output_path)
+  File "/Users/sthukral/Documents/GitHub/EEG_MS_MONO/utils/create_topomaps.py", line 133, in _verify_image
+    raise ValueError(f"Invalid image dimensions: {img.shape}, expected {expected_shape}")
+ValueError: Invalid image dimensions: (98, 92, 4), expected (128, 128, 3)
+2024-11-30 22:53:25,763 - INFO - Processing /Users/sthukral/Documents/GitHub/EEG_MS_MONO/data/1.0.0/Subject00_2.edf
+2024-11-30 22:53:25,786 - INFO - Data shape: (19, 31000), Duration: 62.00s
+2024-11-30 22:53:25,788 - INFO - GFP stats - Mean: 0.00, STD: 0.00, Min: 0.00, Max: 0.00
+2024-11-30 22:53:25,789 - INFO - Found 407 GFP peaks (min distance: 60ms)
+2024-11-30 22:53:25,789 - INFO - GFP threshold: 0.000 (mean + 0.5*std)
+2024-11-30 22:53:25,790 - INFO - Processing 407 GFP windows
+2024-11-30 22:53:25,818 - ERROR - Error processing /Users/sthukral/Documents/GitHub/EEG_MS_MONO/data/1.0.0/Subject00_2.edf: Invalid image dimensions: (98, 92, 4), expected (128, 128, 3)
+Traceback (most recent call last):
+  File "/Users/sthukral/Documents/GitHub/EEG_MS_MONO/utils/create_topomaps.py", line 251, in process_eeg
+    self.process_gfp_windows(data, eeg_data.info, peak_windows, output_dir)
+  File "/Users/sthukral/Documents/GitHub/EEG_MS_MONO/utils/create_topomaps.py", line 206, in process_gfp_windows
+    self.create_topomap(snapshot, eeg_info, output_path)
+  File "/Users/sthukral/Documents/GitHub/EEG_MS_MONO/utils/create_topomaps.py", line 124, in create_topomap
+    self._verify_image(output_path)
+  File "/Users/sthukral/Documents/GitHub/EEG_MS_MONO/utils/create_topomaps.py", line 133, in _verify_image
+    raise ValueError(f"Invalid image dimensions: {img.shape}, expected {expected_shape}")
+ValueError: Invalid image dimensions: (98, 92, 4), expected (128, 128, 3)
