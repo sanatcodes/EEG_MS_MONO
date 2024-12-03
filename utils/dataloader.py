@@ -1,32 +1,128 @@
 import os
-from PIL import Image
+import json
+from pathlib import Path
 import numpy as np
+from PIL import Image
 import torch
 from torch.utils.data import Dataset
-import torchvision.transforms as transforms
 
 class TopomapDataset(Dataset):
-    def __init__(self, folder_path, transform=None):
-        self.folder_path = folder_path
-        self.file_names = sorted([f for f in os.listdir(folder_path) if f.endswith('.png')])
-        self.transform = transform or transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-        ])
-
+    def __init__(self, base_path, state='resting_state', map_type='continuous'):
+        """
+        Args:
+            base_path (str): Path to the topomaps directory
+            state (str): 'resting_state' or 'task_state'
+            map_type (str): 'continuous_maps' or 'gfp_peaks_maps'
+        """
+        self.base_path = Path(base_path)
+        self.state = state
+        self.map_type = map_type
+        
+        # Validate inputs before building dataset
+        if not self.base_path.exists():
+            raise ValueError(f"Base path does not exist: {self.base_path}")
+            
+        if state not in ['resting_state', 'task_state']:
+            raise ValueError(f"Invalid state: {state}. Must be 'resting_state' or 'task_state'")
+            
+        if map_type not in ['continuous', 'peaks']:
+            raise ValueError(f"Invalid map_type: {map_type}. Must be 'continuous' or 'peaks'")
+        
+        # Build dataset structure
+        self.samples = self._build_dataset()
+        
+        # Ensure we found some data
+        if not self.samples:
+            raise ValueError(f"No valid samples found in {self.base_path / self.map_type / self.state}")
+        
+    def _build_dataset(self):
+        """Build dataset structure from directory"""
+        samples = []
+        state_path = self.base_path / self.map_type / self.state
+        
+        if not state_path.exists():
+            raise ValueError(f"Data directory not found: {state_path}")
+        
+        # Iterate through subject directories
+        for subject_dir in state_path.glob("Subject*"):
+            # Load metadata
+            metadata_file = 'continuous_metadata.json' if self.map_type == 'continuous' else 'subject_metadata.json'
+            metadata_path = subject_dir / metadata_file
+            
+            if not metadata_path.exists():
+                continue
+                
+            try:
+                with open(metadata_path) as f:
+                    metadata = json.load(f)
+                
+                # Get subject ID from directory name
+                subject_id = subject_dir.name
+                
+                # Add each topomap with its metadata
+                timepoints = metadata.get('timepoints' if self.map_type == 'continuous' else 'peaks', [])
+                
+                for point in timepoints:
+                    img_name = f'topo_continuous_{point["timepoint_id"]:04d}.png' if self.map_type == 'continuous' \
+                             else f'topo_peak_{point["peak_id"]:04d}.png'
+                    img_path = subject_dir / img_name
+                    
+                    if not img_path.exists():
+                        continue
+                        
+                    samples.append({
+                        'image_path': img_path,
+                        'subject_id': subject_id,
+                        'time_ms': point['time_ms'],
+                        'index': point['timepoint_id'] if self.map_type == 'continuous' else point['peak_id']
+                    })
+                    
+            except Exception as e:
+                print(f"Error processing {subject_dir}: {e}")
+                continue
+                
+        return samples
     def __len__(self):
-        return len(self.file_names)
+        return len(self.samples)
 
     def __getitem__(self, idx):
-        img_path = os.path.join(self.folder_path, self.file_names[idx])
-        image = Image.open(img_path).convert('RGB')
-        return self.transform(image)
+        """
+        Returns:
+            dict: Contains:
+                - image: torch.Tensor of shape [1, H, W] normalized to [-1, 1]
+                - subject_id: str
+                - time_ms: float
+                - index: int
+        """
+        sample = self.samples[idx]
+        
+        # Load and convert image to grayscale (topomaps are essentially grayscale)
+        image = Image.open(sample['image_path']).convert('L')
+        
+        # Convert to tensor and normalize to [-1, 1]
+        image = torch.from_numpy(np.array(image)).float() / 127.5 - 1
+        image = image.unsqueeze(0)  # Add channel dimension [1, H, W]
+        
+        return {
+            'image': image,
+            'subject_id': sample['subject_id'],
+            'time_ms': sample['time_ms'],
+            'index': sample['index']
+        }
 
     def get_stats(self):
-        shapes = np.array([Image.open(os.path.join(self.folder_path, f)).size 
-                          for f in self.file_names])
+        """Get dataset statistics"""
+        n_subjects = len(set(s['subject_id'] for s in self.samples))
+        n_images = len(self.samples)
+        
+        # Load first image to get dimensions
+        first_image = Image.open(self.samples[0]['image_path'])
+        image_size = first_image.size
+        
         return {
-            "num_images": len(self.file_names),
-            "mean_shape": shapes.mean(axis=0),
-            "std_shape": shapes.std(axis=0)
+            "num_subjects": n_subjects,
+            "num_images": n_images,
+            "image_size": image_size,
+            "state": self.state,
+            "map_type": self.map_type
         }

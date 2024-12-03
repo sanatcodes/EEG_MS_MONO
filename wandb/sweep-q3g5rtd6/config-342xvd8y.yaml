@@ -1,0 +1,20 @@
+wandb_version: 1
+
+batch_size:
+  value: 32
+early_stopping_patience:
+  value: 5
+latent_dim:
+  value: 16
+learning_rate:
+  value: 0.000415411752922652
+num_epochs:
+  value: 50
+optimizer:
+  value: adam
+scheduler_factor:
+  value: 0.5
+scheduler_patience:
+  value: 5
+weight_decay:
+  value: 1.0e-05

@@ -1,0 +1,51 @@
+{
+  "os":  "macOS-15.0.1-arm64-arm-64bit",
+  "python":  "3.12.2",
+  "startedAt":  "2024-12-03T16:08:39.238251Z",
+  "args":  [
+    "--base_path",
+    "/Users/sthukral/Documents/GitHub/EEG_MS_MONO/outputs/topomaps/local_run",
+    "--state",
+    "resting_state",
+    "--map_type",
+    "continuous",
+    "--val_split",
+    "0.2",
+    "--sweep_count",
+    "1"
+  ],
+  "program":  "/Users/sthukral/Documents/GitHub/EEG_MS_MONO/utils/run_training.py",
+  "codePath":  "utils/run_training.py",
+  "git":  {
+    "remote":  "https://github.com/sanatcodes/EEG_MS_MONO.git",
+    "commit":  "012607983b93248edcd290b73d4ccfaf8506d47b"
+  },
+  "email":  "sanat.thukral@gmail.com",
+  "root":  "/Users/sthukral/Documents/GitHub/EEG_MS_MONO",
+  "host":  "soc-HYY7T7G2JR-2A15-ST",
+  "username":  "sthukral",
+  "executable":  "/Users/sthukral/Documents/GitHub/EEG_MS_MONO/venv/bin/python3",
+  "codePathLocal":  "utils/run_training.py",
+  "cpu_count":  8,
+  "cpu_count_logical":  8,
+  "disk":  {
+    "/":  {
+      "total":  "994662584320",
+      "used":  "252027146240"
+    }
+  },
+  "memory":  {
+    "total":  "25769803776"
+  },
+  "cpu":  {
+    "count":  8,
+    "countLogical":  8
+  },
+  "apple":  {
+    "name":  "Apple M2",
+    "ecpuCores":  4,
+    "pcpuCores":  4,
+    "gpuCores":  10,
+    "memoryGb":  24
+  }
+}

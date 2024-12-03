@@ -7,6 +7,7 @@ from configs.base_config import BaseConfig
 from configs.topo_config import TopoConfig
 from configs.cae_config import CAEConfig
 from configs.cluster_config import ClusterConfig
+from utils.run_training import train
 
 logging.basicConfig(
     level=logging.INFO,
@@ -37,7 +38,14 @@ def main():
         
     if args.stage == 'cae' or args.stage == 'all':
         logger.info("Running CAE training...")
-        # Import and run CAE training
+        # Call the train function with parameters
+        train(
+            config=None,  # Pass the appropriate config
+            base_path=args.config,  # Use the config argument as base_path
+            state='resting_state',  # Example state
+            map_type='continuous',  # Example map_type
+            val_split=0.2  # Example validation split
+        )
         
     if args.stage == 'cluster' or args.stage == 'all':
         logger.info("Running clustering analysis...")

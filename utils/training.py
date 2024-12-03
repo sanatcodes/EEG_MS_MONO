@@ -85,14 +85,14 @@ def train_model(model, train_loader, val_loader, config):
         early_stopping_counter = 0
         
         for epoch in range(config.num_epochs):
-            # Training phase
             model.train()
             train_loss = 0.0
             progress_bar = tqdm(train_loader, desc=f'Epoch {epoch+1}/{config.num_epochs}')
             
-            for batch_idx, data in enumerate(progress_bar):
+            for batch_idx, batch in enumerate(progress_bar):
                 try:
-                    data = data.to(device)
+                    # Extract image tensor from batch dictionary and move to device
+                    data = batch['image'].to(device)
                     optimizer.zero_grad()
                     
                     # Forward pass
@@ -126,8 +126,8 @@ def train_model(model, train_loader, val_loader, config):
             model.eval()
             val_loss = 0.0
             with torch.no_grad():
-                for data in val_loader:
-                    data = data.to(device)
+                for batch in val_loader:
+                    data = batch['image'].to(device)
                     reconstructed, latent = model(data)
                     loss = criterion(reconstructed, data)
                     val_loss += loss.item()

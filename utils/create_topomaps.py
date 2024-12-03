@@ -277,8 +277,8 @@ def main(local=False, process_mode='both', map_interval_ms=40):
     
     # Create separate output directories for continuous and peaks
     output_dirs = {
-        'continuous': output_base / 'continuous_maps',
-        'peaks': output_base / 'gfp_peaks_maps'
+        'continuous': output_base / 'continuous',
+        'peaks': output_base / 'peaks'
     }
     
     # Clear and create output directories based on process_mode
