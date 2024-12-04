@@ -4,16 +4,20 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 import torch
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader, random_split
 
 class TopomapDataset(Dataset):
-    def __init__(self, base_path, state='resting_state', map_type='continuous'):
+    def __init__(self, base_path, state='resting_state', map_type='continuous', 
+                 train_split=0.8, batch_size=32):
         """
         Args:
             base_path (str): Path to the topomaps directory
             state (str): 'resting_state' or 'task_state'
-            map_type (str): 'continuous_maps' or 'gfp_peaks_maps'
+            map_type (str): 'continuous' or 'peaks'
+            train_split (float): Proportion of data to use for training
+            batch_size (int): Batch size for data loaders
         """
+        super().__init__()
         self.base_path = Path(base_path)
         self.state = state
         self.map_type = map_type
@@ -34,6 +38,34 @@ class TopomapDataset(Dataset):
         # Ensure we found some data
         if not self.samples:
             raise ValueError(f"No valid samples found in {self.base_path / self.map_type / self.state}")
+        
+        # Create train/val split
+        total_size = len(self.samples)
+        train_size = int(total_size * train_split)
+        val_size = total_size - train_size
+        
+        train_dataset, val_dataset = random_split(
+            self, 
+            [train_size, val_size],
+            generator=torch.Generator().manual_seed(42)  # For reproducibility
+        )
+        
+        # Create data loaders
+        self.train_loader = DataLoader(
+            train_dataset,
+            batch_size=batch_size,
+            shuffle=True,
+            num_workers=0,  # Adjust based on your system
+            pin_memory=True
+        )
+        
+        self.val_loader = DataLoader(
+            val_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=0,  # Adjust based on your system
+            pin_memory=True
+        )
         
     def _build_dataset(self):
         """Build dataset structure from directory"""

@@ -262,19 +262,19 @@ class EEGProcessor:
     
 
 
-def main(local=False, process_mode='both', map_interval_ms=40):
+def main(local=False, process_mode='both', map_interval_ms=40, base_dir=None, data_dir=None, output_base=None):
     # Setup directories based on environment
     if local:
-        base_dir = Path('/Users/sthukral/Documents/GitHub/EEG_MS_MONO/data')
-        data_dir = base_dir / '1.0.0'
-        output_base = Path('/Users/sthukral/Documents/GitHub/EEG_MS_MONO/outputs/topomaps/local_run')
+        base_dir = base_dir or Path('/Users/sthukral/Documents/GitHub/EEG_MS_MONO/data')
+        data_dir = data_dir or base_dir / '1.0.0'
+        output_base = output_base or Path('/Users/sthukral/Documents/GitHub/EEG_MS_MONO/outputs/topomaps/local_run')
         max_files = 2
     else:
-        base_dir = Path('/home/CAMPUS/d18129674/EEG_DC_TOPO')
-        data_dir = base_dir / 'EEG_data'
-        output_base = base_dir / 'TOPOMAPS_OUT_3'
+        base_dir = base_dir or Path('/home/CAMPUS/d18129674/EEG_DC_TOPO')
+        data_dir = data_dir or base_dir / 'EEG_data'
+        output_base = output_base or base_dir / 'TOPOMAPS_OUT_3'
         max_files = None
-    
+
     # Create separate output directories for continuous and peaks
     output_dirs = {
         'continuous': output_base / 'continuous',
